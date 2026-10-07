@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Feuille de production</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..100,400..800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6F8F7; --card:#FFFFFF; --ink:#16282B; --muted:#5B6E71; --line:#D5DEDC;
+  --brand:#0B6B63; --brand-ink:#FFFFFF; --brand-soft:#DCEFEC;
+  --warn-bg:#FFEFB8; --warn-bar:#D99A00; --warn-ink:#6B4A00;
+  --info-bg:#E4ECFA; --info-ink:#27458A; --bad:#B3261E;
+  font-family:"Archivo",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-size:15px;line-height:1.45}
+h1,h2,h3{font-stretch:85%;margin:0;line-height:1.15}
+h1{font-size:1.5rem;font-weight:800}
+h2{font-size:1.15rem;font-weight:700;margin-bottom:.6rem}
+h3{font-size:1rem;font-weight:700}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #1E88E5;outline-offset:2px}
+.boot{padding:3rem;text-align:center;color:var(--muted)}
+header.top{display:flex;gap:1rem;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:.8rem 1.2rem;background:var(--ink);color:#fff}
+header.top .who{font-size:.85rem;opacity:.9;display:flex;gap:.8rem;align-items:center}
+nav.tabs{display:flex;gap:.25rem;padding:.6rem 1.2rem 0;border-bottom:1px solid var(--line);background:var(--card);overflow-x:auto}
+nav.tabs button{border:0;background:none;padding:.6rem 1rem;cursor:pointer;border-bottom:3px solid transparent;font-weight:600;color:var(--muted);white-space:nowrap}
+nav.tabs button[aria-selected=true]{color:var(--brand);border-bottom-color:var(--brand)}
+main{padding:1.2rem;max-width:1280px;margin:0 auto}
+.card{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:1rem;margin-bottom:1rem}
+.row{display:flex;flex-wrap:wrap;gap:1rem;align-items:flex-end}
+label.f{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;font-weight:600;color:var(--muted)}
+input[type=text],input[type=email],input[type=password],input[type=date],input[type=number],select{padding:.5rem .6rem;border:1px solid #9FB0AE;border-radius:6px;background:#fff;min-height:38px}
+input[type=number]{width:96px}
+.btn{border:1px solid var(--brand);background:var(--brand);color:var(--brand-ink);padding:.5rem .9rem;border-radius:6px;font-weight:600;cursor:pointer;min-height:38px}
+.btn.alt{background:#fff;color:var(--brand)}
+.btn.danger{background:#fff;color:var(--bad);border-color:var(--bad)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.pill{display:inline-block;padding:.1rem .55rem;border-radius:99px;font-size:.78rem;font-weight:700;background:var(--brand-soft);color:var(--brand)}
+.pill.warn{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-bar)}
+.pill.info{background:var(--info-bg);color:var(--info-ink);border:1px dashed var(--info-ink)}
+.pill.bad{background:#FBE0DE;color:var(--bad)}
+.muted{color:var(--muted)}
+.small{font-size:.85rem}
+.err{color:var(--bad);font-weight:600}
+.ok{color:var(--brand);font-weight:600}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%}
+th,td{padding:.45rem .6rem;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+th{font-size:.8rem;color:var(--muted);font-weight:700;background:#EEF3F2;position:sticky;top:0}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+tr.norec td{background:var(--warn-bg)}
+tr.norec td:first-child{box-shadow:inset 5px 0 0 var(--warn-bar)}
+tr.confirm td{background:var(--info-bg)}
+tr.zero td{color:#8DA0A0}
+tr.cat td{background:#E3EAE9;font-weight:700;font-stretch:85%}
+td input[type=number]{width:84px;text-align:right}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;align-items:center;font-size:.85rem}
+.sw{display:inline-block;width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:.3rem}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1rem}
+.login{max-width:400px;margin:8vh auto;padding:0 1rem}
+.login form{display:flex;flex-direction:column;gap:.8rem}
+.cell{width:34px;height:30px;border:1px solid var(--line);border-radius:4px;background:#fff;cursor:default;font-weight:800}
+.cell.on{background:var(--brand);color:#fff;border-color:var(--brand)}
+.cell.cur{outline:2px solid #1E88E5}
+.cell.edit{cursor:pointer}
+.printhead{display:none}
+@media print{
+  header.top,nav.tabs,.no-print{display:none!important}
+  body{background:#fff;font-size:12px}
+  main{padding:0;max-width:none}
+  .card{border:0;padding:0}
+  .printhead{display:block;margin-bottom:.6rem}
+  th{position:static}
+  td input{border:0;padding:0;width:auto;background:none}
+  tr.norec td{background:#FFEFB8!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+@media (prefers-reduced-motion:no-preference){button{transition:background-color .12s}}
+</style>
+</head>
+<body>
+<div id="app"><p class="boot">Chargement…</p></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ---------- Configuration (clé publique : l'accès aux données est protégé par les règles RLS côté base) ---------- */
+const SB_URL = 'https://wplolvjziqqvvcydvfxs.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndwbG9sdmp6aXFxdnZjeWR2ZnhzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQ1NTAwNzYsImV4cCI6MjEwMDEyNjA3Nn0.DD2sqXCHcVyETPxb78QiBzH21r73y2CAY5LdXCH5k9w';
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+/* ---------- Utilitaires ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/\(.*?\)/g,' ').replace(/[^a-z0-9 ]/g,' ').replace(/\s+/g,' ').trim();
+const STOP = new Set(['de','du','la','le','les','et','au','aux','a','d','l','en','un','une']);
+const toks = s => new Set(norm(s).split(' ').filter(w => w && !STOP.has(w)).map(w => w.length>3 ? w.replace(/s$/,'') : w));
+const score = (a,b) => { const A=toks(a),B=toks(b); if(!A.size||!B.size) return 0; let i=0; A.forEach(w=>{ if(B.has(w)) i++; }); return i/(A.size+B.size-i); };
+const pad = n => String(n).padStart(2,'0');
+const isoLocal = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const addDays = (iso,n) => { const d=new Date(iso+'T12:00:00'); d.setDate(d.getDate()+n); return isoLocal(d); };
+const frDate = iso => iso ? iso.split('-').reverse().join('/') : '';
+const fmtG = (g,name) => /^sachet/i.test(name||'') ? `${Math.ceil(g-1e-9)} u` : (g>=1000 ? (g/1000).toLocaleString('fr-FR',{maximumFractionDigits:2})+' kg' : Math.round(g).toLocaleString('fr-FR')+' g');
+const ZONES = [['CF -','Chambre froide négative (CF -)'],['CF +','Chambre froide positive (CF +)'],['LEGUMERIE','Légumerie'],['SEC','Stock sec'],['À classer','Zone de stockage à renseigner']];
+
+const S = { ready:false, session:null, role:null, tab:'prod', per:[], cad:[], rec:{}, alias:[], aliasMap:{}, users:[], hist:[],
+  date:isoLocal(new Date()), coef:100, hide0:false, raw:[], cfg:null, avg:{}, unm:[], over:{}, msg:'' };
+
+/* ---------- Démarrage / authentification ---------- */
+async function boot(){
+  const { data:{ session } } = await sb.auth.getSession();
+  S.session = session;
+  sb.auth.onAuthStateChange((_e, s) => { const was = !!S.session; S.session = s; if (!!s !== was) start(); });
+  await start();
+}
+async function start(){
+  S.ready = false; view();
+  if (S.session){
+    const { data, error } = await sb.rpc('pb_role');
+    S.role = error ? null : data;
+    if (S.role) await loadAll();
+  } else S.role = null;
+  S.ready = true; view();
+}
+async function loadAll(){
+  const [p,c,r,a,h] = await Promise.all([
+    sb.from('pb_periodes').select('*').order('idx'),
+    sb.from('pb_cadencier').select('*').order('id'),
+    sb.from('pb_recettes').select('*'),
+    sb.from('pb_alias').select('*'),
+    sb.from('pb_feuilles').select('id,date_prod,periode,coef,resultat,created_by,created_at').order('created_at',{ascending:false}).limit(15)
+  ]);
+  S.per = p.data||[]; S.cad = c.data||[]; S.hist = h.data||[];
+  S.rec = {}; (r.data||[]).forEach(x => S.rec[x.libelle] = x);
+  S.alias = a.data||[]; buildAliasMap();
+}
+function buildAliasMap(){
+  S.aliasMap = {};
+  S.alias.forEach(a => { S.aliasMap[norm(a.libelle_vente)] = a.recette; });
+}
+
+/* ---------- Vues ---------- */
+function view(){
+  const app = $('#app');
+  if (!S.ready) { app.innerHTML = '<p class="boot">Chargement…</p>'; return; }
+  if (!S.session) return loginView(app);
+  if (!S.role) return deniedView(app);
+  appView(app);
+}
+function loginView(app){
+  app.innerHTML = `<div class="login"><h1>Feuille de production</h1>
+  <p class="muted">Connexion réservée aux personnes autorisées.</p>
+  <form id="lf"><label class="f">Adresse e-mail<input type="email" id="em" autocomplete="username" required></label>
+  <label class="f">Mot de passe<input type="password" id="pw" autocomplete="current-password" required minlength="6"></label>
+  <button class="btn" type="submit">Se connecter</button>
+  <button class="btn alt" type="button" id="su">Créer mon compte</button>
+  <p id="lmsg" class="small" role="status"></p></form></div>`;
+  const msg = (t,c='err') => { $('#lmsg').className = 'small '+c; $('#lmsg').textContent = t; };
+  $('#lf').onsubmit = async e => { e.preventDefault();
+    const { error } = await sb.auth.signInWithPassword({ email:$('#em').value.trim(), password:$('#pw').value });
+    if (error) msg(error.message.includes('Email not confirmed') ? "Adresse e-mail pas encore confirmée : ouvre le message reçu." : "Identifiants incorrects."); };
+  $('#su').onclick = async () => {
+    const email = $('#em').value.trim(), password = $('#pw').value;
+    if (!email || password.length < 6) return msg('Renseigne ton e-mail et un mot de passe de 6 caractères minimum.');
+    const { error } = await sb.auth.signUp({ email, password, options:{ emailRedirectTo: location.href.split('#')[0] } });
+    if (error) return msg(error.message);
+    msg("Compte créé. Confirme ton adresse via le message reçu, puis demande à un administrateur de t'ajouter.", 'ok'); };
+}
+function deniedView(app){
+  app.innerHTML = `<div class="login"><h1>Accès non autorisé</h1>
+  <p>Le compte <strong>${esc(S.session.user.email)}</strong> n'est pas autorisé à utiliser cette feuille de production, ou son adresse n'est pas confirmée.</p>
+  <p class="muted">Demande à un administrateur de t'ajouter, puis reconnecte-toi.</p>
+  <button class="btn alt" id="lo">Se déconnecter</button></div>`;
+  $('#lo').onclick = () => sb.auth.signOut();
+}
+function appView(app){
+  const tabs = [['prod','Feuille de prod'],['cad','Cadencier'],...(S.role==='admin'?[['acc','Accès']]:[])];
+  app.innerHTML = `<header class="top"><h1>Feuille de production</h1>
+    <div class="who"><span>${esc(S.session.user.email)} <span class="pill">${esc({admin:'Administrateur',prod:'Production',lecture:'Lecture'}[S.role])}</span></span>
+    <button class="btn alt" id="lo">Se déconnecter</button></div></header>
+    <nav class="tabs" role="tablist">${tabs.map(([k,l])=>`<button role="tab" aria-selected="${S.tab===k}" data-tab="${k}">${l}</button>`).join('')}</nav>
+    <main id="main"></main>`;
+  $('#lo').onclick = () => sb.auth.signOut();
+  document.querySelectorAll('[data-tab]').forEach(b => b.onclick = () => { S.tab = b.dataset.tab; appView($('#app')); });
+  if (S.tab==='prod') prodView(); else if (S.tab==='cad') cadView(); else accView();
+}
+
+/* ---------- Période, lignes, bruts ---------- */
+function periodIdx(){
+  let idx = -1; S.per.forEach(p => { if (p.debut <= S.date) idx = p.idx; });
+  const last = S.per[S.per.length-1];
+  if (last && idx === last.idx && S.date > addDays(last.debut,13)) return -2;
+  return idx;
+}
+function periodLabel(){
+  const i = periodIdx(); if (i < 0) return null;
+  const p = S.per.find(x => x.idx===i); return { ...p, fin: addDays(p.debut,13) };
+}
+function lines(){
+  const i = periodIdx(); if (i < 0) return [];
+  return S.cad.filter(c => c.actif[i]===1).map(c => {
+    const avg = S.avg[c.id]||0, auto = Math.ceil(avg*S.coef/100 - 1e-9), o = S.over[c.id];
+    return { c, avg, auto, qty: (o!==undefined && o!=='') ? Number(o) : auto };
+  });
+}
+function bruts(L){
+  const raw = {}, preps = {}, zmap = {};
+  Object.values(S.rec).forEach(r => r.lignes.forEach(l => { if (l[4]) zmap[norm(l[0])] = String(l[4]).trim(); }));
+  const add = (name,g,poste,zone) => { const k = norm(name);
+    const o = raw[k] || (raw[k] = { name, g:0, postes:new Set(), zone:(zone ? String(zone).trim() : zmap[k]) || 'À classer' });
+    o.g += g; if (poste) o.postes.add(poste); };
+  L.forEach(({c,qty}) => {
+    if (!qty || !c.recette_bdd) return;
+    const r = S.rec[c.recette_bdd]; if (!r) return;
+    r.lignes.forEach(([ing,t,poste,b,zone]) => {
+      const g = b*qty;
+      if (t === 'A'){
+        const k = norm(ing), o = preps[k] || (preps[k] = { name:ing, g:0, zone:(zone||'CF +').trim(), decomp:false });
+        o.g += g;
+        const base = S.rec['BASE CREMEUX'];
+        if (k==='cremeux fb mascarpone' && base){ o.decomp = true; base.lignes.forEach(([i2,,p2,b2,z2]) => add(i2, b2*g/base.poids, p2, z2)); }
+      } else add(ing, g, poste, zone);
+    });
+  });
+  return { raw:Object.values(raw), preps:Object.values(preps) };
+}
+
+/* ---------- Onglet feuille de prod ---------- */
+function prodView(){
+  const can = S.role !== 'lecture', canEditAlias = can;
+  const p = periodLabel();
+  const perTxt = periodIdx()===-2 ? `<span class="pill bad">Hors cadencier (après le ${frDate(addDays(S.per[S.per.length-1].debut,13))})</span>`
+    : p ? `<span class="pill">${esc(p.label)} · du ${frDate(p.debut)} au ${frDate(p.fin)}</span>` : `<span class="pill bad">Avant le début du cadencier</span>`;
+  $('#main').innerHTML = `
+  <section class="card no-print"><h2>1. Jour de production et ventes</h2>
+    <div class="row">
+      <label class="f">Jour de production<input type="date" id="dt" value="${S.date}"></label>
+      <div>${perTxt}</div>
+      <label class="f">Coefficient de prévision (%)<input type="number" id="cf" min="0" max="500" step="5" value="${S.coef}"></label>
+      <label class="f">Excel(s) des ventes (3 derniers jours d'activité)<input type="file" id="fl" accept=".xlsx,.xls,.csv" multiple ${can?'':'disabled'}></label>
+    </div>
+    <div id="mapbox"></div>
+  </section>
+  <div id="unm"></div>
+  <section class="card"><div class="printhead"><h1>Feuille de production</h1><p>${p?`Production du ${frDate(S.date)} · cadencier ${esc(p.label)}`:''}</p></div>
+    <div class="row no-print" style="justify-content:space-between;margin-bottom:.6rem"><h2 style="margin:0">2. Produits finis à produire</h2>
+      <div class="row">
+        <label class="f" style="flex-direction:row;align-items:center;gap:.4rem"><input type="checkbox" id="h0" ${S.hide0?'checked':''}> Masquer les produits à 0</label>
+        <button class="btn alt" id="pr">Imprimer</button><button class="btn alt" id="csv">Export CSV</button>
+        ${can?'<button class="btn" id="sv">Enregistrer la feuille</button>':''}</div></div>
+    <div class="legend no-print" style="margin-bottom:.6rem"><span><span class="sw" style="background:var(--warn-bg);box-shadow:inset 4px 0 0 var(--warn-bar)"></span>Sans recette dans le fichier (non décomposé en bruts)</span><span><span class="sw" style="background:var(--info-bg)"></span>Recette associée à confirmer</span></div>
+    <div id="lines"></div></section>
+  <section class="card"><h2>3. Éléments de production de base (bruts)</h2><div id="bruts"></div></section>
+  <section class="card no-print"><h2>Feuilles enregistrées</h2><div id="hist"></div></section>`;
+  $('#dt').onchange = e => { S.date = e.target.value || S.date; prodView(); };
+  $('#cf').onchange = e => { S.coef = Math.max(0, Number(e.target.value)||0); renderResults(); };
+  $('#fl').onchange = async e => { await readFiles([...e.target.files]); };
+  $('#h0').onchange = e => { S.hide0 = e.target.checked; renderResults(); };
+  $('#pr').onclick = () => window.print();
+  $('#csv').onclick = exportCsv;
+  if ($('#sv')) $('#sv').onclick = saveSheet;
+  renderMap(); renderUnmatched(); renderResults(); renderHist();
+}
+function renderResults(){
+  const L = lines(), rows = S.hide0 ? L.filter(x => x.qty>0) : L;
+  let cat = '', h = '';
+  if (periodIdx() < 0) h = '<p class="muted">Choisis un jour de production couvert par le cadencier (28/09/2026 → 03/01/2027).</p>';
+  else {
+    h = `<div class="tw"><table><thead><tr><th>Produit</th><th>Type</th><th class="n">Moyenne 3 j</th><th class="n">À produire</th><th>Recette</th></tr></thead><tbody>`;
+    rows.forEach(({c,avg,qty}) => {
+      if (c.categorie !== cat){ cat = c.categorie; h += `<tr class="cat"><td colspan="5">${esc(cat)}</td></tr>`; }
+      const cls = c.statut==='sans_recette' ? 'norec' : c.statut==='a_confirmer' ? 'confirm' : '';
+      const badge = c.statut==='sans_recette' ? '<span class="pill warn">Sans recette</span>' : c.statut==='a_confirmer' ? `<span class="pill info">À confirmer : ${esc(c.recette_bdd)}</span>` : '<span class="muted small">'+esc(c.recette_bdd)+'</span>';
+      h += `<tr class="${cls} ${qty===0?'zero':''}"><td>${esc(c.recette)}</td><td>${c.type==='P'?'Permanent':'Tournant'}</td>
+        <td class="n">${avg ? avg.toLocaleString('fr-FR',{maximumFractionDigits:1}) : '–'}</td>
+        <td class="n"><input type="number" min="0" step="1" value="${qty}" data-q="${c.id}" ${S.role==='lecture'?'disabled':''} aria-label="Quantité ${esc(c.recette)}"></td><td>${badge}</td></tr>`;
+    });
+    const tot = rows.reduce((a,x)=>a+x.qty,0);
+    h += `</tbody><tfoot><tr><td colspan="3"><strong>Total pièces</strong></td><td class="n"><strong>${tot}</strong></td><td></td></tr></tfoot></table></div>`;
+    if (!Object.keys(S.avg).length) h += '<p class="muted small no-print">Aucune vente chargée : les quantités sont à 0. Charge les Excel de ventes ou saisis les quantités à la main.</p>';
+  }
+  $('#lines').innerHTML = h;
+  $('#lines').querySelectorAll('[data-q]').forEach(i => i.onchange = e => { S.over[i.dataset.q] = e.target.value; renderResults(); });
+  renderBruts();
+}
+function renderBruts(){
+  const { raw, preps } = bruts(lines());
+  if (!raw.length && !preps.length){ $('#bruts').innerHTML = '<p class="muted">Aucune quantité à produire pour le moment.</p>'; return; }
+  let h = '<div class="cols">';
+  ZONES.forEach(([z,label]) => {
+    const items = raw.filter(r => (ZONES.some(x=>x[0]===r.zone) ? r.zone : 'À classer') === z).sort((a,b)=>a.name.localeCompare(b.name,'fr'));
+    if (!items.length) return;
+    h += `<div><h3>${label}</h3><table><thead><tr><th>Ingrédient</th><th>Poste</th><th class="n">Quantité brute</th></tr></thead><tbody>` +
+      items.map(r => `<tr><td>${esc(r.name)}</td><td class="small muted">${esc([...r.postes].join(', '))}</td><td class="n"><strong>${fmtG(r.g,r.name)}</strong></td></tr>`).join('') + '</tbody></table></div>';
+  });
+  h += '</div>';
+  if (preps.length) h += `<h3 style="margin-top:1rem">Préparations à réaliser en amont</h3><table><thead><tr><th>Préparation</th><th class="n">Quantité</th><th>Détail</th></tr></thead><tbody>` +
+    preps.map(p => `<tr><td>${esc(p.name)}</td><td class="n"><strong>${fmtG(p.g)}</strong></td><td class="small muted">${p.decomp ? 'Décomposée en bruts ci-dessus (recette BASE CREMEUX)' : 'Recette absente du fichier : à ajouter pour décomposer en bruts'}</td></tr>`).join('') + '</tbody></table>';
+  $('#bruts').innerHTML = h;
+}
+function renderHist(){
+  if (!S.hist.length){ $('#hist').innerHTML = '<p class="muted">Aucune feuille enregistrée.</p>'; return; }
+  $('#hist').innerHTML = '<table><thead><tr><th>Production</th><th>Période</th><th>Par</th><th></th></tr></thead><tbody>' +
+    S.hist.map(f => `<tr><td>${frDate(f.date_prod)}</td><td>${esc(f.periode||'')}</td><td class="small">${esc(f.created_by||'')}</td><td><button class="btn alt" data-h="${f.id}">Rouvrir</button></td></tr>`).join('') + '</tbody></table>';
+  $('#hist').querySelectorAll('[data-h]').forEach(b => b.onclick = () => {
+    const f = S.hist.find(x => x.id===b.dataset.h); if (!f) return;
+    S.date = f.date_prod; S.coef = Number(f.coef)||100; S.over = {};
+    (f.resultat?.lignes||[]).forEach(l => { const c = S.cad.find(x => x.recette===l.recette); if (c) S.over[c.id] = l.qte; });
+    prodView(); window.scrollTo({top:0});
+  });
+}
+async function saveSheet(){
+  const p = periodLabel(); if (!p) return alert('Choisis un jour de production couvert par le cadencier.');
+  const L = lines().filter(x => x.qty>0).map(x => ({ recette:x.c.recette, qte:x.qty }));
+  if (!L.length) return alert('Aucune quantité à enregistrer.');
+  const { error } = await sb.from('pb_feuilles').insert({ date_prod:S.date, periode:p.label, coef:S.coef, resultat:{ lignes:L }, created_by:S.session.user.email });
+  if (error) return alert("Enregistrement impossible : " + error.message);
+  await loadAll(); renderHist(); alert('Feuille enregistrée.');
+}
+function exportCsv(){
+  const L = lines(), { raw, preps } = bruts(L), q = v => '"'+String(v).replace(/"/g,'""')+'"', rows = [];
+  rows.push(['PRODUITS FINIS','Catégorie','Moyenne 3 j','À produire','Recette'].map(q).join(';'));
+  L.forEach(x => rows.push(['',x.c.categorie,x.c.recette,x.avg.toFixed(1).replace('.',','),x.qty,x.c.statut==='sans_recette'?'SANS RECETTE':x.c.recette_bdd].map(q).join(';')));
+  rows.push('');
+  rows.push(['BRUTS','Zone','Ingrédient','Quantité (g)'].map(q).join(';'));
+  raw.sort((a,b)=>a.zone.localeCompare(b.zone)||a.name.localeCompare(b.name,'fr')).forEach(r => rows.push(['',r.zone,r.name,Math.round(r.g)].map(q).join(';')));
+  rows.push('');
+  rows.push(['PREPARATIONS AMONT','','Préparation','Quantité (g)'].map(q).join(';'));
+  preps.forEach(p => rows.push(['','',p.name,Math.round(p.g)].map(q).join(';')));
+  const blob = new Blob(['\ufeff'+rows.join('\r\n')], { type:'text/csv;charset=utf-8' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `feuille-prod-${S.date}.csv`; a.click(); URL.revokeObjectURL(a.href);
+}
+
+/* ---------- Import des ventes ---------- */
+function toNum(v){ if (typeof v==='number') return v; if (v==null) return null; const n = parseFloat(String(v).replace(/\s/g,'').replace(',','.')); return isNaN(n) ? null : n; }
+function toISO(v){
+  if (v instanceof Date && !isNaN(v)) { const d = new Date(v.getTime()+12*3600e3); return `${d.getUTCFullYear()}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())}`; }
+  if (typeof v==='number' && v>30000 && v<80000){ const o = XLSX.SSF.parse_date_code(v); return o ? `${o.y}-${pad(o.m)}-${pad(o.d)}` : null; }
+  if (typeof v==='string'){ let m = v.match(/(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})/); if (m) return `${m[3]}-${pad(m[2])}-${pad(m[1])}`; m = v.match(/(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0]; }
+  return null;
+}
+const MOIS = [['janv',1],['fevr',2],['mars',3],['avr',4],['mai',5],['juin',6],['juil',7],['aout',8],['sept',9],['oct',10],['nov',11],['dec',12]];
+function parsePeriod(aoa){
+  for (let i=0; i<Math.min(aoa.length,15); i++){
+    for (const c of aoa[i]){
+      const m = typeof c==='string' && c.match(/P[ée]riode du (\d{1,2})\s+([^\s]+)\s+(\d{4})/i);
+      if (m){ const k = MOIS.find(x => norm(m[2]).startsWith(x[0])); if (k) return `${m[3]}-${pad(k[1])}-${pad(+m[1])}`; }
+    }
+  }
+  return null;
+}
+async function readFiles(files){
+  S.raw = [];
+  const T = c => String(c ?? '').trim();
+  for (const f of files){
+    const wb = XLSX.read(await f.arrayBuffer(), { type:'array', cellDates:true });
+    const sn = wb.SheetNames.find(n => /par.produit/i.test(n) && !/date/i.test(n)) || wb.SheetNames[0];
+    const aoa = XLSX.utils.sheet_to_json(wb.Sheets[sn], { header:1, raw:true, defval:null });
+    const o = { name:f.name, aoa, hdr:0 };
+    const h = aoa.findIndex((r,i) => i<30 && r.some(c => /^produit$/i.test(T(c))) && aoa[i+1] && aoa[i+1].some(c => /^quantit/i.test(T(c))));
+    if (h >= 0){   /* export de caisse « Ventes produits - Synthèse » : colonne Produit + dernière colonne Quantité (Total) */
+      let qi = -1; aoa[h+1].forEach((c,i) => { if (/^quantit/i.test(T(c))) qi = i; });
+      o.synth = true; o.hdr = h+1; o.day = parsePeriod(aoa);
+      o.cols = { p:aoa[h].findIndex(c => /^produit$/i.test(T(c))), q:qi, d:-1, c:aoa[h].findIndex(c => /^cat/i.test(T(c))) };
+    } else {
+      let hd = aoa.findIndex((r,i) => i<20 && r.filter(c => typeof c==='string' && c.trim()).length >= 2);
+      o.hdr = hd < 0 ? 0 : hd;
+    }
+    S.raw.push(o);
+  }
+  if (!S.raw.length) return;
+  const g = S.raw.find(f => !f.synth);
+  if (g){
+    const hh = g.aoa[g.hdr].map(x => String(x ?? ''));
+    const find = re => hh.findIndex(x => re.test(x));
+    S.cfg = { p: Math.max(0, find(/libell|produit|article|d[ée]signation|recette|nom/i)), q: Math.max(0, find(/qt|quant|nb|nombre|vendu|vente/i)), d: find(/date|jour/i), c:-1 };
+  } else S.cfg = null;
+  renderMap(); applySales();
+}
+function renderMap(){
+  const box = $('#mapbox'); if (!box) return;
+  if (!S.raw.length){ box.innerHTML = '<p class="muted small">Charge un ou plusieurs fichiers Excel de ventes (export de caisse « Ventes produits - Synthèse », ou tout fichier avec libellé produit, quantité et date).</p>'; return; }
+  if (!S.cfg){ box.innerHTML = `<p class="small ok" style="margin-top:.8rem">Export de caisse détecté : colonne « Produit » et quantité « Total » ; la date est lue dans l'en-tête de chaque fichier (${S.raw.length} fichier(s) : ${S.raw.map(f => f.day ? frDate(f.day) : '?').join(', ')}).</p>`; return; }
+  const g0 = S.raw.find(f => !f.synth);
+  const h = g0.aoa[g0.hdr].map((x,i) => `<option value="${i}">${esc(String(x ?? '(colonne '+(i+1)+')'))}</option>`).join('');
+  box.innerHTML = `<div class="row" style="margin-top:.8rem">
+    <label class="f">Colonne produit<select id="mp">${h}</select></label>
+    <label class="f">Colonne quantité<select id="mq">${h}</select></label>
+    <label class="f">Colonne date<select id="md"><option value="-1">(aucune : 1 fichier = 1 jour)</option>${h}</select></label>
+    <span class="small muted">${S.raw.length} fichier(s) lu(s)</span></div>`;
+  $('#mp').value = S.cfg.p; $('#mq').value = S.cfg.q; $('#md').value = S.cfg.d;
+  ['mp','mq','md'].forEach(id => $('#'+id).onchange = () => { S.cfg = { p:+$('#mp').value, q:+$('#mq').value, d:+$('#md').value, c:-1 }; applySales(); });
+}
+function resolve(lib){
+  const n = norm(lib), al = S.aliasMap[n];
+  if (al !== undefined){ if (al==='__IGNORE__') return { ign:true }; const c = S.cad.find(x => x.recette===al); if (c) return { id:c.id }; }
+  let best = null, bs = 0;
+  S.cad.forEach(c => [c.recette,c.recette_bdd].forEach(x => { if (!x) return; const s = norm(x)===n ? 1 : score(lib,x); if (s>bs){ bs = s; best = c; } }));
+  return bs >= 0.8 ? { id:best.id } : { sug: best && bs>=0.4 ? best.id : null };
+}
+function applySales(){
+  const byProd = {}, dayTot = {};
+  S.raw.forEach((f,fi) => { const cols = f.cols || S.cfg; if (!cols) return; const { p,q,d,c } = cols;
+   for (let i=f.hdr+1; i<f.aoa.length; i++){
+    const r = f.aoa[i], lib = r[p], qty = toNum(r[q]);
+    if (!lib || qty==null || /^total/i.test(String(lib).trim())) continue;
+    const day = (d>=0 ? toISO(r[d]) : null) || f.day || ('F'+String(fi).padStart(3,'0'));
+    const k = norm(lib), o = byProd[k] || (byProd[k] = { lib:String(lib).trim(), cat:(c>=0 && r[c]) ? String(r[c]).trim() : '', days:{}, tot:0 });
+    o.days[day] = (o.days[day]||0) + qty; o.tot += qty; dayTot[day] = (dayTot[day]||0) + qty;
+  }});
+  const days = Object.keys(dayTot).filter(x => dayTot[x] > 0).sort().slice(-3);
+  S.avg = {}; S.unm = [];
+  Object.values(byProd).forEach(o => {
+    const sum = days.reduce((a,x) => a + (o.days[x]||0), 0); if (!sum) return;
+    const r = resolve(o.lib);
+    if (r.id) S.avg[r.id] = (S.avg[r.id]||0) + sum/days.length;
+    else if (!r.ign) S.unm.push({ lib:o.lib, cat:o.cat, avg:sum/days.length, sug:r.sug });
+  });
+  S.unm.sort((a,b) => b.avg-a.avg);
+  S.daysUsed = days;
+  renderUnmatched(); renderResults();
+}
+function renderUnmatched(){
+  const box = $('#unm'); if (!box) return;
+  if (!S.raw.length){ box.innerHTML=''; return; }
+  const dtxt = (S.daysUsed||[]).map(x => x.startsWith('F') ? 'fichier '+(+x.slice(1)+1) : frDate(x)).join(', ');
+  let h = `<section class="card no-print"><h2>Correspondance des ventes</h2><p class="small">Moyenne calculée sur les ${(S.daysUsed||[]).length} derniers jours d'activité : <strong>${esc(dtxt)}</strong>.</p>`;
+  const ic = periodIdx(), off = ic < 0 ? [] : S.cad.filter(c => S.avg[c.id] && c.actif[ic]!==1).map(c => c.recette);
+  if (off.length) h += `<p class="small"><span class="pill info">Vendus mais hors cadencier sur cette période</span> (non repris dans la feuille) : ${off.map(esc).join(', ')}.</p>`;
+  if (!S.unm.length) h += '<p class="ok">Tous les produits vendus sont rapprochés du cadencier ou ignorés.</p>';
+  else {
+    const opts = sel => '<option value="">— Choisir —</option><option value="__IGNORE__">Ignorer ce produit</option>' + S.cad.map(c => `<option value="${c.id}" ${String(sel)===String(c.id)?'selected':''}>${esc(c.recette)}</option>`).join('');
+    h += `<p class="small">${S.unm.length} libellé(s) de vente sans correspondance. Rapproche-les d'un produit du cadencier ou ignore-les (boissons, etc.). Le choix est mémorisé pour les prochaines fois.</p>
+    ${(() => { const cs = {}; S.unm.forEach(u => { if (u.cat) cs[u.cat] = (cs[u.cat]||0)+1; }); const ks = Object.keys(cs); return (ks.length && S.role!=='lecture') ? '<div class="row" style="margin:.4rem 0">'+ks.map(k => `<button class="btn alt" data-ic="${esc(k)}">Ignorer « ${esc(k)} » (${cs[k]})</button>`).join('')+'</div>' : ''; })()}
+    <div class="tw"><table><thead><tr><th>Libellé dans les ventes</th><th>Catégorie</th><th class="n">Moy. / jour</th><th>Produit du cadencier</th></tr></thead><tbody>` +
+    S.unm.map((u,i) => `<tr><td>${esc(u.lib)}</td><td class="small muted">${esc(u.cat)}</td><td class="n">${u.avg.toLocaleString('fr-FR',{maximumFractionDigits:1})}</td><td><select data-u="${i}" ${S.role==='lecture'?'disabled':''}>${opts(u.sug)}</select></td></tr>`).join('') + '</tbody></table></div>';
+    if (S.role !== 'lecture') h += '<p><button class="btn alt" id="igall">Ignorer tous les libellés restants</button></p>';
+  }
+  box.innerHTML = h + '</section>';
+  box.querySelectorAll('[data-u]').forEach(s => s.onchange = async e => {
+    const u = S.unm[+s.dataset.u]; if (!e.target.value) return;
+    await setAlias(u.lib, e.target.value === '__IGNORE__' ? '__IGNORE__' : S.cad.find(c => String(c.id)===e.target.value).recette); applySales(); });
+  if ($('#igall')) $('#igall').onclick = async () => { await setAliasMany(S.unm.map(u => u.lib),'__IGNORE__'); applySales(); };
+  box.querySelectorAll('[data-ic]').forEach(b => b.onclick = async () => { await setAliasMany(S.unm.filter(u => u.cat===b.dataset.ic).map(u => u.lib),'__IGNORE__'); applySales(); });
+}
+async function setAliasMany(libs, recette){
+  if (!libs.length) return;
+  const at = new Date().toISOString(), rows = libs.map(lib => ({ libelle_vente:lib, recette, updated_by:S.session.user.email, updated_at:at }));
+  const { error } = await sb.from('pb_alias').upsert(rows, { onConflict:'libelle_vente' });
+  if (error) return alert("Impossible d'enregistrer les correspondances : " + error.message);
+  S.alias = S.alias.filter(a => !libs.includes(a.libelle_vente)).concat(rows); buildAliasMap();
+}
+async function setAlias(lib, recette){
+  const row = { libelle_vente: lib, recette, updated_by: S.session.user.email, updated_at: new Date().toISOString() };
+  const { error } = await sb.from('pb_alias').upsert(row, { onConflict:'libelle_vente' });
+  if (error) return alert("Impossible d'enregistrer la correspondance : " + error.message);
+  S.alias = S.alias.filter(a => a.libelle_vente !== lib).concat(row); buildAliasMap();
+}
+
+/* ---------- Onglet cadencier ---------- */
+function cadView(){
+  const adm = S.role==='admin', cur = periodIdx();
+  const recOpts = sel => '<option value="">— aucune recette —</option>' + Object.values(S.rec).filter(r => r.famille!=='INGREDIENT BUFFET').sort((a,b)=>a.libelle.localeCompare(b.libelle)).map(r => `<option ${r.libelle===sel?'selected':''}>${esc(r.libelle)}</option>`).join('');
+  const n0 = S.cad.filter(c => c.statut==='sans_recette').length, n1 = S.cad.filter(c => c.statut==='a_confirmer').length;
+  let cat = '';
+  $('#main').innerHTML = `<section class="card"><h2>Cadencier gamme automne 2026</h2>
+    <p class="small">${n0} produit(s) sans recette (surlignés en jaune), ${n1} à confirmer (bleu). La période en cours de la feuille de prod est entourée.${adm?' En tant qu’administrateur, clique sur une case pour activer ou désactiver un produit, et choisis la recette liée.':''}</p>
+    <div class="tw"><table><thead><tr><th>Produit</th><th>P/T</th>${S.per.map(p=>`<th title="du ${frDate(p.debut)}">${esc(p.label)}</th>`).join('')}<th>Recette liée</th></tr></thead><tbody>` +
+    S.cad.map(c => { let r = '';
+      if (c.categorie!==cat){ cat = c.categorie; r += `<tr class="cat"><td colspan="${S.per.length+3}">${esc(cat)}</td></tr>`; }
+      const cls = c.statut==='sans_recette'?'norec':c.statut==='a_confirmer'?'confirm':'';
+      r += `<tr class="${cls}"><td>${esc(c.recette)}</td><td>${c.type}</td>` +
+        c.actif.map((a,i) => `<td><button class="cell ${a?'on':''} ${i===cur?'cur':''} ${adm?'edit':''}" ${adm?`data-t="${c.id}:${i}"`:'disabled'} aria-label="${esc(c.recette)} ${esc(S.per[i]?.label||'')} : ${a?'actif':'inactif'}">${a?'✓':''}</button></td>`).join('') +
+        `<td>${adm ? `<select data-r="${c.id}">${recOpts(c.recette_bdd)}</select>` : esc(c.recette_bdd||'—')}</td></tr>`; return r; }).join('') + '</tbody></table></div></section>';
+  document.querySelectorAll('[data-t]').forEach(b => b.onclick = async () => {
+    const [id,i] = b.dataset.t.split(':').map(Number), c = S.cad.find(x => x.id===id), nv = c.actif.slice(); nv[i] = nv[i] ? 0 : 1;
+    const { error } = await sb.from('pb_cadencier').update({ actif:nv }).eq('id',id); if (error) return alert(error.message); c.actif = nv; cadView(); });
+  document.querySelectorAll('[data-r]').forEach(s => s.onchange = async () => {
+    const id = +s.dataset.r, v = s.value || null, st = v ? 'ok' : 'sans_recette';
+    const { error } = await sb.from('pb_cadencier').update({ recette_bdd:v, statut:st }).eq('id',id); if (error) return alert(error.message);
+    const c = S.cad.find(x => x.id===id); c.recette_bdd = v; c.statut = st; cadView(); });
+}
+
+/* ---------- Onglet accès (administrateur) ---------- */
+async function accView(){
+  const { data, error } = await sb.from('pb_users').select('*').order('email');
+  if (error) { $('#main').innerHTML = `<p class="err">${esc(error.message)}</p>`; return; }
+  S.users = data;
+  const me = S.session.user.email.toLowerCase();
+  $('#main').innerHTML = `<section class="card"><h2>Personnes autorisées</h2>
+    <p class="small">Rôles : <strong>Administrateur</strong> (tout, dont les accès), <strong>Production</strong> (charge les ventes, enregistre les feuilles), <strong>Lecture</strong> (consulte et imprime). Une personne doit d'abord créer son compte depuis l'écran de connexion et confirmer son e-mail.</p>
+    <div class="tw"><table><thead><tr><th>E-mail</th><th>Rôle</th><th>Actif</th><th></th></tr></thead><tbody>` +
+    S.users.map(u => `<tr><td>${esc(u.email)}${u.email===me?' <span class="pill">toi</span>':''}</td>
+      <td><select data-ur="${esc(u.email)}" ${u.email===me?'disabled':''}>${['admin','prod','lecture'].map(r=>`<option value="${r}" ${u.role===r?'selected':''}>${{admin:'Administrateur',prod:'Production',lecture:'Lecture'}[r]}</option>`).join('')}</select></td>
+      <td><input type="checkbox" data-ua="${esc(u.email)}" ${u.actif?'checked':''} ${u.email===me?'disabled':''} aria-label="Actif ${esc(u.email)}"></td>
+      <td>${u.email===me?'':`<button class="btn danger" data-ud="${esc(u.email)}">Retirer</button>`}</td></tr>`).join('') + `</tbody></table></div>
+    <form id="af" class="row" style="margin-top:1rem"><label class="f">Ajouter une adresse e-mail<input type="email" id="ae" required></label>
+    <label class="f">Rôle<select id="ar"><option value="lecture">Lecture</option><option value="prod">Production</option><option value="admin">Administrateur</option></select></label>
+    <button class="btn" type="submit">Ajouter</button></form></section>`;
+  const upd = async (email, patch) => { const { error } = await sb.from('pb_users').update(patch).eq('email',email); if (error) alert(error.message); accView(); };
+  document.querySelectorAll('[data-ur]').forEach(s => s.onchange = () => upd(s.dataset.ur, { role:s.value }));
+  document.querySelectorAll('[data-ua]').forEach(c => c.onchange = () => upd(c.dataset.ua, { actif:c.checked }));
+  document.querySelectorAll('[data-ud]').forEach(b => b.onclick = async () => { if (!confirm('Retirer '+b.dataset.ud+' ?')) return;
+    const { error } = await sb.from('pb_users').delete().eq('email',b.dataset.ud); if (error) alert(error.message); accView(); });
+  $('#af').onsubmit = async e => { e.preventDefault();
+    const { error } = await sb.from('pb_users').insert({ email:$('#ae').value.trim().toLowerCase(), role:$('#ar').value }); if (error) alert(error.message); accView(); };
+}
+
+boot();
+</script>
+</body>
+</html>
